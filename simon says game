@@ -1,0 +1,178 @@
+#index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simon Says Game</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <h1>Simon Says Game</h1>
+    <h2>press any key to start the game</h2>
+
+
+    <div class="btn-container">
+        <div class ="line-one">
+    <div class="btn red" type="button" id="red">1</div>
+    <div class="btn yellow" type="button" id="yellow">2</div>
+    </div>
+    <div class="line-two">
+    <div class="btn green" type="button" id="green">3</div>
+    <div class="btn purple" type="button" id="purple">4</div>
+    </div>
+         </div>
+
+
+    <script src="app.js"></script>
+</body>
+</html>
+
+
+
+
+#style.css
+
+body{
+    text-align: center;
+}
+
+.btn {
+    height: 200px;
+    width: 200px;
+    border-radius : 20%;
+    border : 10px solid black;
+    margin : 3rem;
+}
+
+.btn-container {
+    display: flex;
+    justify-content:center;
+
+}
+
+
+.yellow{
+    background-color: yellow;
+}
+
+.red{
+    background-color: red;
+}
+
+.green{
+    background-color:green;
+}
+
+.purple{
+    background-color: purple;
+}
+
+.Flash{
+    background-color:white;
+}
+
+.userFlash{
+    background-color: green;
+}
+
+
+
+#app.js
+
+let gameseq = [];
+let userseq = [];
+
+let started = false;
+let level = 0;
+
+let btns = ["yellow","red", "purple","green"];
+let h2 = document.querySelector("h2");
+
+
+document.addEventListener("keypress",function(){
+    if(started == false){
+        console.log("game is started");
+        started = true;
+        levelUp();
+    }
+        
+});
+
+       function gameFlash(btn) {
+        btn.classList.add("flash");
+        setTimeout(function() {
+            btn.classList.remove("flash");
+
+        }, 250);
+       }
+
+       function btnuserFlash(btn) {
+        btn.classList.add("userflash");
+        setTimeout(function() {
+            btn.classList.remove("userflash");
+
+        }, 250);
+       }
+
+            function levelUp() {
+                userseq = [];
+                level++;
+                h2.innerText = `Level ${level} `;
+
+                let randIdx = Math.floor(Math.random()*3);
+                let randcolor = btns[randIdx];
+                let randbtn = document.querySelector(`.${randcolor}`);
+                // console.log(randIdx);
+                // console.log(randcolor);
+                // console.log(randbtn);
+                gameseq.push(randcolor);
+                console.log(gameseq);
+
+                
+                gameFlash(randbtn);
+            }
+
+            function checkAns(){
+                // console.log("curr level : ", level);
+                let idx = level-1;
+
+                if(userseq[idx]=== gameseq[idx]){
+                    if(userseq.length === gameseq.length){
+                        setTimeout(levelUp,1000);
+                        levelUp();
+                    }
+                    console.log("same value");
+                } else{
+                    h2.innerHtml = `game over! your score was<b>${level}</b> <br> press any key to start`;
+                    document.querySelector("body").style.backgroundcolor = "red";
+                    setTimeout(function() {
+                        document.queryselector.style.backgroundcolor = "white";
+
+                    } , 150);
+                    reset();
+                }
+            }
+
+            function btnPress(idx) {
+                console.log(this);
+                let btn = this;
+                btnuserFlash(btn);
+                userColor = btn.getAttribute("id");
+                userseq.push(userColor);
+
+                checkAns(userseq.length-1);
+            }
+
+            let allBtns = document.querySelectorAll(".btn");
+            for(btns of allBtns) {
+                btns.addEventListener("click",btnPress);
+            }
+
+            function reset(){
+                started = false;
+                gameseq = [];
+                userseq = [];
+                level=0;
+            }
+
